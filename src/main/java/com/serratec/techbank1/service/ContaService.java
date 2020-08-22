@@ -6,9 +6,13 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.serratec.techbank1.exception.NumeroNotFoundIdException;
+import com.serratec.techbank1.exception.invalidIdException;
+import com.serratec.techbank1.exception.invalidSaldoException;
 import com.serratec.techbank1.model.Conta;
 import com.serratec.techbank1.model.Operacao;
 import com.serratec.techbank1.model.Tipo;
+
 
 
 
@@ -33,15 +37,24 @@ public class ContaService {
 	}
 	
 	
-	public Conta exibirPorNumero(Integer numero) {
-		for (Conta conta : listaContas) {
-			if(conta.getNumero().equals(numero)){
-			return conta;
-			}
-		}
-		return null;
+	public Conta exibirPorNumero(Integer numero) throws invalidIdException, NumeroNotFoundIdException {
+		verificarIdValido(numero);
+			
+		int cont = 0;
+			for (Conta conta : listaContas) {
+				
+				if(conta.getNumero() == numero){
+					cont++;
+					return conta;
+					}
+				}
+			
+			if(cont == 0) {
+				numeroNaoEncontrado(numero);
+		}			
+			return null;
 	}
-	
+					
 	
 	
 	public Conta adicionarConta(Conta conta) {
@@ -52,7 +65,7 @@ public class ContaService {
 	
 	
 	
-	public Conta atualizarConta(Conta conta) {
+	public Conta atualizarConta(Conta conta) throws invalidIdException, NumeroNotFoundIdException {
 		Conta ct = exibirPorNumero(conta.getNumero());
 		listaContas.set(listaContas.indexOf(ct), conta);
 		return ct;
@@ -60,36 +73,64 @@ public class ContaService {
 
 	
 
-	public void deletarConta(Integer numero) {
+	public void deletarConta(Integer numero) throws invalidIdException, NumeroNotFoundIdException {
 		Conta ct = exibirPorNumero(numero);
 		listaContas.remove(ct);
 	}
 	
-//___________________________OPERACOES________________________________________________________________
-
-	@Autowired
-	 Operacao operacao;
 	
+	
+	
+//____________________________EXCEPTIONS_______________________________________________________________________	
+	
+	
+	
+	private void numeroNaoEncontrado(Integer numero) throws invalidIdException, NumeroNotFoundIdException{
+		if(numero == null ) {
+			throw new NumeroNotFoundIdException();
+		}
 
-	public Conta debitar(Integer numero, Double valor) {
-		Conta ct = exibirPorNumero(numero);
-		operacao.debitar(ct,valor);
-		operacao.setTipo(Tipo.DEBITO);
-		return ct;
 	}
 	
 	
-	public Conta operacao(Integer numero, Double valor, String tipo) {
-		operacao.setTipo(Tipo.valueOf(tipo));
+	
+	
+	private void verificarIdValido(Integer numero) throws invalidIdException{
+		if (numero <= 0 || numero == null) {
+			throw  new invalidIdException();
+		}
+	}
+	
+	
+	
+	
+	
+//___________________________OPERACOES________________________________________________________________
+
+	
+	@Autowired
+	 Operacao operacao;
+
+
+	public void operacao(Integer numero, Double valor, String tipo) throws invalidIdException, NumeroNotFoundIdException, invalidSaldoException {
+		operacao.setTipo(Tipo.valueOf(tipo.toUpperCase()));
 		Conta ct = exibirPorNumero(numero);
 		
-		if(operacao.getTipo() == Tipo.DEBITO) {
-			operacao.debitar(ct,valor);
+		
+		if(operacao.getTipo() == Tipo.DEBITO && ct.getSaldo() > valor) {
+			operacao.debitar(ct, valor);
+			// "Valor debitado = " + valor + " Saldo = " + ct.getSaldo();
+					
 			
-			return ct;
+		if(operacao.getTipo() == Tipo.CREDITO ) {
+			operacao.creditar(ct, valor);
+			//return "Valor creditado = " + valor + " Saldo = " + ct.getSaldo();
 		}
-		return ct;		
-
+	
+		}else {
+			throw new invalidSaldoException();
+		}
+		
 	}
 	
 	

@@ -39,6 +39,11 @@ public class Conta  {
 	public void setSaldo(Double saldo) {
 		this.saldo = saldo;
 	}
+
+	@Override
+	public String toString() {
+		return "Conta [numero=" + numero + ", titular=" + titular + ", saldo=" + saldo + "]";
+	}
 	
 	
 	

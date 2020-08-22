@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.serratec.techbank1.exception.NumeroNotFoundIdException;
+import com.serratec.techbank1.exception.invalidIdException;
+import com.serratec.techbank1.exception.invalidSaldoException;
 import com.serratec.techbank1.model.Conta;
 import com.serratec.techbank1.service.ContaService;
 
@@ -35,7 +38,7 @@ public class ContaController {
 	
 	
 	@GetMapping("/{numero}")
-	public Conta exibePorNumero(@PathVariable Integer numero) {
+	public Conta exibePorNumero(@PathVariable Integer numero) throws invalidIdException, NumeroNotFoundIdException {
 		return contaService.exibirPorNumero(numero);
 	}
 
@@ -48,37 +51,27 @@ public class ContaController {
 	
 	
 	@PutMapping
-	public Conta atualizarConta(Conta conta) {
+	public Conta atualizarConta(Conta conta) throws invalidIdException, NumeroNotFoundIdException {
 		contaService.atualizarConta(conta);
 		return conta;
 	}
 	
 	
 	@DeleteMapping("/{numero}")
-	public ResponseEntity<?> deletarConta(@PathVariable Integer numero) {
+	public ResponseEntity<?> deletarConta(@PathVariable Integer numero) throws invalidIdException, NumeroNotFoundIdException {
 		contaService.deletarConta(numero);
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 	
 	
-	@PutMapping("/debito/{numero}/{valor}")
-	public double debitar(@PathVariable Integer numero,
-						  @PathVariable Double valor) {
-		contaService.debitar(numero, valor);	
-		return 0;
 	
-	}
-	
-	
-	
-	@PutMapping("/{numero}/{tipo}-{valor}")
-	public double debitar(@PathVariable Integer numero,
-						  @PathVariable Double valor,
-						  @PathVariable String tipo) {
+	@PutMapping("/{numero}/{tipo}={valor}")
+	public String operacao(@PathVariable Integer numero,
+						   @PathVariable Double valor,
+						   @PathVariable String tipo) throws invalidIdException, NumeroNotFoundIdException, invalidSaldoException {
 		
 		contaService.operacao(numero, valor, tipo);	
-		return 0;
-	
+		return "Valor operacao = " + valor + "\nSaldo =  " + contaService.exibirPorNumero(numero).getSaldo();
 	}
 	
 	

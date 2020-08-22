@@ -9,7 +9,6 @@ public class Operacao {
 	private Conta conta;
 	private Double valor;
 	private Tipo tipo;
-
 	
 	
 	public Operacao(Tipo tipo, Conta conta, Double valor) {
@@ -53,13 +52,13 @@ public class Operacao {
 	
 
 	
-	public Conta debitar(Conta conta,Double valor) {
+	public Conta debitar(Conta conta, Double valor) {
 		conta.setSaldo(conta.getSaldo() - valor);
-		System.out.println("Debitado um dinheiro aí");
 		return conta;
 	}
 	
-	public double creditar(double valor) {
+	public double creditar(Conta conta , Double valor) {
+		conta.setSaldo(conta.getSaldo() + valor);	
 		return 0;
 	}
 	
