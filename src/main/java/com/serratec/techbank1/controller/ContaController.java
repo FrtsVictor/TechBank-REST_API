@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.serratec.techbank1.exception.NumeroNotFoundIdException;
+import com.serratec.techbank1.exception.ContaNullException;
 import com.serratec.techbank1.exception.ContaRepetida;
 import com.serratec.techbank1.exception.InvalidIdException;
 import com.serratec.techbank1.exception.InvalidSaldoException;
@@ -46,7 +47,7 @@ public class ContaController {
 
 	
 	@PostMapping
-	public ResponseEntity<Conta> adicionarConta(Conta conta) throws ContaRepetida{
+	public ResponseEntity<Conta> adicionarConta(Conta conta) throws ContaRepetida, ContaNullException{
 		contaService.adicionarConta(conta);
 		return ResponseEntity.status(HttpStatus.CREATED).body(conta);
 	}

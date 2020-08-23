@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.serratec.techbank1.exception.NumeroNotFoundIdException;
+import com.serratec.techbank1.exception.ContaNullException;
 import com.serratec.techbank1.exception.ContaRepetida;
 import com.serratec.techbank1.exception.InvalidIdException;
 import com.serratec.techbank1.exception.InvalidSaldoException;
@@ -58,8 +59,11 @@ public class ContaService {
 					
 	
 	
-	public Conta adicionarConta(Conta conta) throws ContaRepetida{
+	public Conta adicionarConta(Conta conta) throws ContaRepetida, ContaNullException{
 		Conta ct = conta;
+		if(conta.getNumero() == null || conta.getTitular() == null) {
+			throw new ContaNullException(conta);
+		}
 		validarNumero(conta.getNumero());
 		listaContas.add(ct);
 		return ct;

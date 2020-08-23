@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.serratec.techbank1.exception.NumeroNotFoundIdException;
+import com.serratec.techbank1.model.Conta;
+import com.serratec.techbank1.exception.ContaNullException;
 import com.serratec.techbank1.exception.ContaRepetida;
 import com.serratec.techbank1.exception.InvalidIdException;
 import com.serratec.techbank1.exception.InvalidSaldoException;
@@ -45,6 +47,7 @@ public class ContaExceptionController {
 	}
 	
 	
+	
 	@ExceptionHandler(ContaRepetida.class)
 	public ResponseEntity<String> numeroRepetido(ContaRepetida exception){	
 		String msg = String.format("Numero de conta = %d já existe em nosso sistema", exception.getNumero());
@@ -56,6 +59,14 @@ public class ContaExceptionController {
 	
 	
 	
+	@ExceptionHandler(ContaNullException.class)
+	public ResponseEntity<Conta> contaNull(ContaNullException exception){	
+		String msg = String.format("Voce nao inseriu todos os atributos requeridos para a criacao da nova conta");
+		return ResponseEntity.badRequest()
+				.header("X-Erro-msg", msg)
+				.header("X-Erro-code","NULL_VALUES")
+				.build();
+	}
 	
 	
 }
