@@ -3,13 +3,15 @@ package com.serratec.techbank1.service;
 import java.util.ArrayList;
 import java.util.List;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
-import com.serratec.techbank1.exception.NumeroNotFoundIdException;
+import com.serratec.techbank1.exception.NumeroNaoEncontradoException;
 import com.serratec.techbank1.exception.ContaNullException;
-import com.serratec.techbank1.exception.ContaRepetida;
-import com.serratec.techbank1.exception.InvalidIdException;
+import com.serratec.techbank1.exception.ContaRepetidaException;
+import com.serratec.techbank1.exception.NumeroInvalidoException;
 import com.serratec.techbank1.exception.InvalidSaldoException;
 import com.serratec.techbank1.model.Conta;
 import com.serratec.techbank1.model.Operacao;
@@ -30,16 +32,22 @@ public class ContaService {
 		listaContas.add(new Conta(3, "Priscila", 5000.00));
 		listaContas.add(new Conta(4, "Evodio", 7000.00));
 		listaContas.add(new Conta(5, "Carlos", 5000.00));
-	}
-		
-
+	}	
 	
+	public HttpHeaders Header() {		
+	HttpHeaders header = new HttpHeaders();
+	header.add("TECHBANK", "REST_API");
+	header.add("SERRATEC", "SOFTWARE_IMERSION");
+	return header;
+	}
+	
+		
 	public List<Conta> listarContas(){
 		return listaContas;
 	}
 	
 	
-	public Conta exibirPorNumero(Integer numero) throws InvalidIdException, NumeroNotFoundIdException {
+	public Conta exibirPorNumero(Integer numero) throws NumeroInvalidoException, NumeroNaoEncontradoException {
 		verificarIdValido(numero);
 			
 		int cont = 0;
@@ -59,7 +67,7 @@ public class ContaService {
 					
 	
 	
-	public Conta adicionarConta(Conta conta) throws ContaRepetida, ContaNullException{
+	public Conta adicionarConta(Conta conta) throws ContaRepetidaException, ContaNullException{
 		Conta ct = conta;
 		if(conta.getNumero() == null || conta.getTitular() == null) {
 			throw new ContaNullException(conta);
@@ -71,15 +79,17 @@ public class ContaService {
 	
 	
 	
-	public Conta atualizarConta(Conta conta) throws InvalidIdException, NumeroNotFoundIdException {
+	public Conta atualizarConta(Conta conta) throws NumeroInvalidoException, NumeroNaoEncontradoException {
 		Conta ct = exibirPorNumero(conta.getNumero());
+		if(conta.getTitular() == null || conta.getTitular().isBlank()) {conta.setTitular(ct.getTitular());}
+		if(conta.getSaldo() == null) {conta.setSaldo(ct.getSaldo());}
 		listaContas.set(listaContas.indexOf(ct), conta);
 		return ct;
 	}
 
 	
 
-	public void deletarConta(Integer numero) throws InvalidIdException, NumeroNotFoundIdException {
+	public void deletarConta(Integer numero) throws NumeroInvalidoException, NumeroNaoEncontradoException {
 		Conta ct = exibirPorNumero(numero);
 		listaContas.remove(ct);
 	}
@@ -91,9 +101,9 @@ public class ContaService {
 	
 	
 	
-	private void numeroNaoEncontrado(Integer numero) throws InvalidIdException, NumeroNotFoundIdException{
+	private void numeroNaoEncontrado(Integer numero) throws NumeroInvalidoException, NumeroNaoEncontradoException{
 		if(numero == null ) {
-			throw new NumeroNotFoundIdException();
+			throw new NumeroNaoEncontradoException();
 		}
 
 	}
@@ -101,19 +111,19 @@ public class ContaService {
 	
 	
 	
-	private void verificarIdValido(Integer numero) throws InvalidIdException{
+	private void verificarIdValido(Integer numero) throws NumeroInvalidoException{
 		if (numero <= 0 || numero == null) {
-			throw  new InvalidIdException();
+			throw  new NumeroInvalidoException(numero);
 		}
 	}
 	
 	
 	
-	public void validarNumero(Integer numero) throws ContaRepetida{
+	public void validarNumero(Integer numero) throws ContaRepetidaException{
 		for (Conta conta : listaContas) {
 			Boolean numeroInvalido = conta.getNumero().equals(numero);
 			if (numeroInvalido) {
-				throw new ContaRepetida(numero);
+				throw new ContaRepetidaException(numero);
 			
 		}
 		
@@ -132,23 +142,23 @@ public class ContaService {
 	 Operacao operacao;
 
 
-	public void operacao(Integer numero, Double valor, String tipo) throws InvalidIdException, NumeroNotFoundIdException, InvalidSaldoException {
+	public Conta operacao(Integer numero, Double valor, String tipo) throws NumeroInvalidoException, NumeroNaoEncontradoException, InvalidSaldoException {
 		operacao.setTipo(Tipo.valueOf(tipo.toUpperCase()));
 		Conta ct = exibirPorNumero(numero);
+
+		if(operacao.getTipo() == Tipo.CREDITO ) {
+			operacao.creditar(ct, valor);
+			return ct;
+		}
 		
 		
 		if(operacao.getTipo() == Tipo.DEBITO && ct.getSaldo() > valor) {
 			operacao.debitar(ct, valor);
-		}
-					
-			
-		 if(operacao.getTipo() == Tipo.CREDITO ) {
-			operacao.creditar(ct, valor);
-		}
+		return ct;
+		}else {
+			 throw new InvalidSaldoException(ct.getSaldo(), valor);
+		 }
 	
-		else {
-			throw new InvalidSaldoException();
-		}
 		
 	}
 	
