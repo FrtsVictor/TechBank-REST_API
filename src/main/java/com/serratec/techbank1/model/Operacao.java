@@ -57,9 +57,9 @@ public class Operacao {
 		return conta;
 	}
 	
-	public double creditar(Conta conta , Double valor) {
+	public Conta creditar(Conta conta , Double valor) {
 		conta.setSaldo(conta.getSaldo() + valor);	
-		return 0;
+		return conta;
 	}
 	
 	

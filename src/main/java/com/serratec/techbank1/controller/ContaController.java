@@ -38,22 +38,24 @@ public class ContaController {
 	
 	
 	@GetMapping("/{numero}")
-	public Conta exibePorNumero(@PathVariable Integer numero) throws invalidIdException, NumeroNotFoundIdException {
-		return contaService.exibirPorNumero(numero);
+	public ResponseEntity<Conta> exibePorNumero(@PathVariable Integer numero) throws invalidIdException, NumeroNotFoundIdException {
+		return ResponseEntity.status(HttpStatus.OK).body(contaService.exibirPorNumero(numero));
+
 	}
 
 	
 	@PostMapping
-	public Conta adicionarConta(Conta conta) {
+	public ResponseEntity<Conta> adicionarConta(Conta conta) {
 		contaService.adicionarConta(conta);
-		return conta;
+		return ResponseEntity.status(HttpStatus.CREATED).body(conta);
 	}
+		
 	
 	
 	@PutMapping
-	public Conta atualizarConta(Conta conta) throws invalidIdException, NumeroNotFoundIdException {
+	public ResponseEntity<Conta> atualizarConta(Conta conta) throws invalidIdException, NumeroNotFoundIdException {
 		contaService.atualizarConta(conta);
-		return conta;
+		return ResponseEntity.status(HttpStatus.OK).body(conta);
 	}
 	
 	
@@ -66,12 +68,13 @@ public class ContaController {
 	
 	
 	@PutMapping("/{numero}/{tipo}={valor}")
-	public String operacao(@PathVariable Integer numero,
+	public ResponseEntity<String> operacao(@PathVariable Integer numero,
 						   @PathVariable Double valor,
 						   @PathVariable String tipo) throws invalidIdException, NumeroNotFoundIdException, invalidSaldoException {
 		
 		contaService.operacao(numero, valor, tipo);	
-		return "Valor operacao = " + valor + "\nSaldo =  " + contaService.exibirPorNumero(numero).getSaldo();
+        String op = "Valor operacao = " + valor + "\nSaldo =  " + contaService.exibirPorNumero(numero).getSaldo();
+        return ResponseEntity.status(HttpStatus.OK).body(op);
 	}
 	
 	

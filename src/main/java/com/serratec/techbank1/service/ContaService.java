@@ -119,12 +119,11 @@ public class ContaService {
 		
 		if(operacao.getTipo() == Tipo.DEBITO && ct.getSaldo() > valor) {
 			operacao.debitar(ct, valor);
-			// "Valor debitado = " + valor + " Saldo = " + ct.getSaldo();
+
 					
 			
 		if(operacao.getTipo() == Tipo.CREDITO ) {
 			operacao.creditar(ct, valor);
-			//return "Valor creditado = " + valor + " Saldo = " + ct.getSaldo();
 		}
 	
 		}else {
