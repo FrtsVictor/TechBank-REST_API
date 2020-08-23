@@ -4,23 +4,23 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.serratec.techbank1.exception.NumeroNotFoundIdException;
+import com.serratec.techbank1.exception.NumeroNaoEncontradoException;
 import com.serratec.techbank1.model.Conta;
 import com.serratec.techbank1.exception.ContaNullException;
-import com.serratec.techbank1.exception.ContaRepetida;
-import com.serratec.techbank1.exception.InvalidIdException;
+import com.serratec.techbank1.exception.ContaRepetidaException;
+import com.serratec.techbank1.exception.NumeroInvalidoException;
 import com.serratec.techbank1.exception.InvalidSaldoException;
 
 @RestControllerAdvice
 public class ContaExceptionController {
 
 	
-	@ExceptionHandler(InvalidIdException.class)
-	public ResponseEntity<?> invalidId(InvalidIdException exception){				
-		String msg = "Numero inserido invalido";
+	@ExceptionHandler(NumeroInvalidoException.class)
+	public ResponseEntity<?> invalidId(NumeroInvalidoException exception){				
+		String msg = String.format("O numero = %d  é invalido, digite um valor maior que 0", exception.getNumero() );
 		return ResponseEntity.badRequest()
-				.header("X-Erro-msg", msg)
-				.header("X-Erro-code", "INVALID_NUMBER")
+				.header("Error-msg", msg)
+				.header("Error-code", "INVALID_NUMBER")
 				.build();		
 	}
 	
@@ -28,7 +28,7 @@ public class ContaExceptionController {
 	
 	@ExceptionHandler(InvalidSaldoException.class)
 	public ResponseEntity<?> invalidValue(InvalidSaldoException exception){	
-		String msg = "Voce não possui saldo suficiente para esta operacao";
+		String msg = String.format("Saldo: %.2f Valor da operecao: %.2f. Saldo insuficiente para esta operacao.", exception.getSaldo(), exception.getValor());
 		return ResponseEntity.badRequest()
 				.header("X-Erro-msg", msg)
 				.header("X-Erro-code", "IVALID_BALANCE")
@@ -37,8 +37,8 @@ public class ContaExceptionController {
 	
 	
 	
-	@ExceptionHandler(NumeroNotFoundIdException.class)
-	public ResponseEntity<?> notFoundNumber(NumeroNotFoundIdException exception){	
+	@ExceptionHandler(NumeroNaoEncontradoException.class)
+	public ResponseEntity<?> notFoundNumber(NumeroNaoEncontradoException exception){	
 		String msg ="Numero inserido não existente";
 		return ResponseEntity.notFound()
 				.header("X-Erro-msg", msg)
@@ -48,8 +48,8 @@ public class ContaExceptionController {
 	
 	
 	
-	@ExceptionHandler(ContaRepetida.class)
-	public ResponseEntity<String> numeroRepetido(ContaRepetida exception){	
+	@ExceptionHandler(ContaRepetidaException.class)
+	public ResponseEntity<String> numeroRepetido(ContaRepetidaException exception){	
 		String msg = String.format("Numero de conta = %d já existe em nosso sistema", exception.getNumero());
 		return ResponseEntity.badRequest()
 				.header("X-Erro-msg", msg)
