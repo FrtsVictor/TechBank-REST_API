@@ -13,11 +13,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.serratec.techbank1.exception.NumeroNotFoundIdException;
+import com.serratec.techbank1.exception.NumeroNaoEncontradoException;
 import com.serratec.techbank1.exception.ContaNullException;
-import com.serratec.techbank1.exception.ContaRepetida;
-import com.serratec.techbank1.exception.InvalidIdException;
+import com.serratec.techbank1.exception.ContaRepetidaException;
+import com.serratec.techbank1.exception.NumeroInvalidoException;
 import com.serratec.techbank1.exception.InvalidSaldoException;
 import com.serratec.techbank1.model.Conta;
 import com.serratec.techbank1.service.ContaService;
@@ -34,49 +33,51 @@ public class ContaController {
 	
 	
 	@GetMapping
-	public List<Conta> listarContas(){
-		return contaService.listarContas();
+	public ResponseEntity<List<Conta>> listarContas(){
+		return new ResponseEntity<List<Conta>>(contaService.listarContas(), contaService.Header(), HttpStatus.OK);
 	}
 	
 	
 	@GetMapping("/{numero}")
-	public ResponseEntity<Conta> exibePorNumero(@PathVariable Integer numero) throws InvalidIdException, NumeroNotFoundIdException {
-		return ResponseEntity.status(HttpStatus.OK).body(contaService.exibirPorNumero(numero));
-
+	public ResponseEntity<Conta> exibePorNumero(@PathVariable Integer numero) throws NumeroInvalidoException, NumeroNaoEncontradoException {
+		//contaService.exibirPorNumero(numero);		
+		return new ResponseEntity<Conta>(contaService.exibirPorNumero(numero), contaService.Header(), HttpStatus.OK);
 	}
 
 	
 	@PostMapping
-	public ResponseEntity<Conta> adicionarConta(Conta conta) throws ContaRepetida, ContaNullException{
-		contaService.adicionarConta(conta);
-		return ResponseEntity.status(HttpStatus.CREATED).body(conta);
+	public ResponseEntity<Conta> adicionarConta(Conta conta) throws ContaRepetidaException, ContaNullException{
+		//contaService.adicionarConta(conta);
+		//return ResponseEntity.status(HttpStatus.CREATED).body(conta);
+		return new ResponseEntity<Conta>(contaService.adicionarConta(conta), contaService.Header(), HttpStatus.CREATED);
 	}
 		
 	
 	
 	@PutMapping
-	public ResponseEntity<Conta> atualizarConta(Conta conta) throws InvalidIdException, NumeroNotFoundIdException {
+	public ResponseEntity<Conta> atualizarConta(Conta conta) throws NumeroInvalidoException, NumeroNaoEncontradoException {
 		contaService.atualizarConta(conta);
-		return ResponseEntity.status(HttpStatus.OK).body(conta);
+//		return ResponseEntity.status(HttpStatus.OK).body(conta);
+		return new ResponseEntity<Conta>(conta,contaService.Header(), HttpStatus.OK);
 	}
 	
 	
 	@DeleteMapping("/{numero}")
-	public ResponseEntity<?> deletarConta(@PathVariable Integer numero) throws InvalidIdException, NumeroNotFoundIdException {
+	public ResponseEntity<?> deletarConta(@PathVariable Integer numero) throws NumeroInvalidoException, NumeroNaoEncontradoException {
 		contaService.deletarConta(numero);
-		return ResponseEntity.status(HttpStatus.OK).build();
+		return new ResponseEntity<HttpStatus>(contaService.Header(), HttpStatus.OK);
 	}
-	
 	
 	
 	@PutMapping("/{numero}/{tipo}={valor}")
 	public ResponseEntity<String> operacao(@PathVariable Integer numero,
 						   @PathVariable Double valor,
-						   @PathVariable String tipo) throws InvalidIdException, NumeroNotFoundIdException, InvalidSaldoException {
+						   @PathVariable String tipo) throws NumeroInvalidoException, NumeroNaoEncontradoException, InvalidSaldoException {
 		
 		contaService.operacao(numero, valor, tipo);	
         String op = "Valor operacao = " + valor + "\nSaldo =  " + contaService.exibirPorNumero(numero).getSaldo();
-        return ResponseEntity.status(HttpStatus.OK).body(op);
+        //return ResponseEntity.status(HttpStatus.OK).body(op);
+        return new ResponseEntity<String>(op, contaService.Header(), HttpStatus.OK);
 	}
 	
 	
