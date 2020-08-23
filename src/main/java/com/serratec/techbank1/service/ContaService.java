@@ -7,8 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.serratec.techbank1.exception.NumeroNotFoundIdException;
-import com.serratec.techbank1.exception.invalidIdException;
-import com.serratec.techbank1.exception.invalidSaldoException;
+import com.serratec.techbank1.exception.ContaRepetida;
+import com.serratec.techbank1.exception.InvalidIdException;
+import com.serratec.techbank1.exception.InvalidSaldoException;
 import com.serratec.techbank1.model.Conta;
 import com.serratec.techbank1.model.Operacao;
 import com.serratec.techbank1.model.Tipo;
@@ -37,7 +38,7 @@ public class ContaService {
 	}
 	
 	
-	public Conta exibirPorNumero(Integer numero) throws invalidIdException, NumeroNotFoundIdException {
+	public Conta exibirPorNumero(Integer numero) throws InvalidIdException, NumeroNotFoundIdException {
 		verificarIdValido(numero);
 			
 		int cont = 0;
@@ -57,15 +58,16 @@ public class ContaService {
 					
 	
 	
-	public Conta adicionarConta(Conta conta) {
+	public Conta adicionarConta(Conta conta) throws ContaRepetida{
 		Conta ct = conta;
+		validarNumero(conta.getNumero());
 		listaContas.add(ct);
 		return ct;
 	}
 	
 	
 	
-	public Conta atualizarConta(Conta conta) throws invalidIdException, NumeroNotFoundIdException {
+	public Conta atualizarConta(Conta conta) throws InvalidIdException, NumeroNotFoundIdException {
 		Conta ct = exibirPorNumero(conta.getNumero());
 		listaContas.set(listaContas.indexOf(ct), conta);
 		return ct;
@@ -73,7 +75,7 @@ public class ContaService {
 
 	
 
-	public void deletarConta(Integer numero) throws invalidIdException, NumeroNotFoundIdException {
+	public void deletarConta(Integer numero) throws InvalidIdException, NumeroNotFoundIdException {
 		Conta ct = exibirPorNumero(numero);
 		listaContas.remove(ct);
 	}
@@ -85,7 +87,7 @@ public class ContaService {
 	
 	
 	
-	private void numeroNaoEncontrado(Integer numero) throws invalidIdException, NumeroNotFoundIdException{
+	private void numeroNaoEncontrado(Integer numero) throws InvalidIdException, NumeroNotFoundIdException{
 		if(numero == null ) {
 			throw new NumeroNotFoundIdException();
 		}
@@ -95,11 +97,25 @@ public class ContaService {
 	
 	
 	
-	private void verificarIdValido(Integer numero) throws invalidIdException{
+	private void verificarIdValido(Integer numero) throws InvalidIdException{
 		if (numero <= 0 || numero == null) {
-			throw  new invalidIdException();
+			throw  new InvalidIdException();
 		}
 	}
+	
+	
+	
+	public void validarNumero(Integer numero) throws ContaRepetida{
+		for (Conta conta : listaContas) {
+			Boolean numeroInvalido = conta.getNumero().equals(numero);
+			if (numeroInvalido) {
+				throw new ContaRepetida(numero);
+			
+		}
+		
+	}
+	}
+	
 	
 	
 	
@@ -112,22 +128,22 @@ public class ContaService {
 	 Operacao operacao;
 
 
-	public void operacao(Integer numero, Double valor, String tipo) throws invalidIdException, NumeroNotFoundIdException, invalidSaldoException {
+	public void operacao(Integer numero, Double valor, String tipo) throws InvalidIdException, NumeroNotFoundIdException, InvalidSaldoException {
 		operacao.setTipo(Tipo.valueOf(tipo.toUpperCase()));
 		Conta ct = exibirPorNumero(numero);
 		
 		
 		if(operacao.getTipo() == Tipo.DEBITO && ct.getSaldo() > valor) {
 			operacao.debitar(ct, valor);
-
+		}
 					
 			
-		if(operacao.getTipo() == Tipo.CREDITO ) {
+		 if(operacao.getTipo() == Tipo.CREDITO ) {
 			operacao.creditar(ct, valor);
 		}
 	
-		}else {
-			throw new invalidSaldoException();
+		else {
+			throw new InvalidSaldoException();
 		}
 		
 	}

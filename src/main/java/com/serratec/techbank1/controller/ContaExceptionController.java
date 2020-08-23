@@ -5,15 +5,16 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.serratec.techbank1.exception.NumeroNotFoundIdException;
-import com.serratec.techbank1.exception.invalidIdException;
-import com.serratec.techbank1.exception.invalidSaldoException;
+import com.serratec.techbank1.exception.ContaRepetida;
+import com.serratec.techbank1.exception.InvalidIdException;
+import com.serratec.techbank1.exception.InvalidSaldoException;
 
 @RestControllerAdvice
 public class ContaExceptionController {
 
 	
-	@ExceptionHandler(invalidIdException.class)
-	public ResponseEntity<?> invalidId(invalidIdException exception){				
+	@ExceptionHandler(InvalidIdException.class)
+	public ResponseEntity<?> invalidId(InvalidIdException exception){				
 		String msg = "Numero inserido invalido";
 		return ResponseEntity.badRequest()
 				.header("X-Erro-msg", msg)
@@ -23,8 +24,8 @@ public class ContaExceptionController {
 	
 	
 	
-	@ExceptionHandler(invalidSaldoException.class)
-	public ResponseEntity<?> invalidValue(invalidSaldoException exception){	
+	@ExceptionHandler(InvalidSaldoException.class)
+	public ResponseEntity<?> invalidValue(InvalidSaldoException exception){	
 		String msg = "Voce não possui saldo suficiente para esta operacao";
 		return ResponseEntity.badRequest()
 				.header("X-Erro-msg", msg)
@@ -36,10 +37,20 @@ public class ContaExceptionController {
 	
 	@ExceptionHandler(NumeroNotFoundIdException.class)
 	public ResponseEntity<?> notFoundNumber(NumeroNotFoundIdException exception){	
-		String msg ="Numero digitado não existente";
+		String msg ="Numero inserido não existente";
 		return ResponseEntity.notFound()
 				.header("X-Erro-msg", msg)
 				.header("X-Erro-code", "NOT_FOUND")
+				.build();
+	}
+	
+	
+	@ExceptionHandler(ContaRepetida.class)
+	public ResponseEntity<String> numeroRepetido(ContaRepetida exception){	
+		String msg = String.format("Numero de conta = %d já existe em nosso sistema", exception.getNumero());
+		return ResponseEntity.badRequest()
+				.header("X-Erro-msg", msg)
+				.header("X-Erro-code","NUMBER_ALREADY_EXISTS" + exception.getNumero())
 				.build();
 	}
 	
