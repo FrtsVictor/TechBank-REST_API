@@ -3,6 +3,7 @@ package com.serratec.techbank1.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -32,6 +33,14 @@ import io.swagger.annotations.ApiOperation;
 @Api(value="REST API TechBank")
 public class ContaController {
 
+	public HttpHeaders Header() {
+		HttpHeaders header = new HttpHeaders();
+		header.add("TECHBANK", "REST_API");
+		header.add("SERRATEC", "SOFTWARE_IMMERSION");
+		return header;
+	}
+	
+	
 	@Autowired
 	ContaService contaService;
 
@@ -41,34 +50,34 @@ public class ContaController {
 	@ApiOperation(value="Retorna AboutUs, lista de informações sobre o sistema")
 	@GetMapping("/about-us")
 	public ResponseEntity<AboutUsConfig> aboutUs() {
-		return new ResponseEntity<AboutUsConfig>(aboutUsConfig, contaService.Header(), HttpStatus.ACCEPTED);
+		return new ResponseEntity<AboutUsConfig>(aboutUsConfig, Header(), HttpStatus.ACCEPTED);
 	}
 
 	@ApiOperation(value="Retorna lista com todas as contas no sistema")
 	@GetMapping
 	public ResponseEntity<List<Conta>> listarContas() {
-		return new ResponseEntity<List<Conta>>(contaService.listarContas(), contaService.Header(), HttpStatus.OK);
+		return new ResponseEntity<List<Conta>>(contaService.listarContas(), Header(), HttpStatus.OK);
 	}
 
 	@ApiOperation(value="Retorna quantidade total de contas na lista")
 	@GetMapping("/size")
 	public ResponseEntity<String> contarLista() {
 		String tamanhoLista = "Contas no sistema: " + contaService.contarLista().toString();
-		return new ResponseEntity<String>(tamanhoLista, contaService.Header(), HttpStatus.OK);
+		return new ResponseEntity<String>(tamanhoLista, Header(), HttpStatus.OK);
 	}
 
 	@ApiOperation(value="Retorna conta pelo identificador 'numero' ,nao aceita numeros negativos ou 0")
 	@GetMapping("/{numero}")
 	public ResponseEntity<Conta> exibePorNumero(@PathVariable Integer numero)
 			throws NumeroInvalidoException, NumeroNaoEncontradoException {
-		return new ResponseEntity<Conta>(contaService.exibirPorNumero(numero), contaService.Header(), HttpStatus.OK);
+		return new ResponseEntity<Conta>(contaService.exibirPorNumero(numero), Header(), HttpStatus.OK);
 	}
 
 	@ApiOperation(value="Adiciona uma conta no sistema, nao aceita valores nulos, negativos ou numeros de conta ja existentes")
 	@PostMapping
 	public ResponseEntity<Conta> adicionarConta(Conta conta)
 			throws ContaRepetidaException, ContaNullException, NumeroInvalidoException, SaldoInvalidoException {
-		return new ResponseEntity<Conta>(contaService.adicionarConta(conta), contaService.Header(), HttpStatus.CREATED);
+		return new ResponseEntity<Conta>(contaService.adicionarConta(conta), Header(), HttpStatus.CREATED);
 	}
 
 	@ApiOperation(value="Atualiza uma conta utilizando o identificador 'numero', caso todos os dados nao sejam inseridos, manten-se os valores anteriores")
@@ -76,7 +85,7 @@ public class ContaController {
 	public ResponseEntity<Conta> atualizarConta(Conta conta)
 			throws NumeroInvalidoException, NumeroNaoEncontradoException, SaldoInvalidoException {
 		contaService.atualizarConta(conta);
-		return new ResponseEntity<Conta>(conta, contaService.Header(), HttpStatus.OK);
+		return new ResponseEntity<Conta>(conta, Header(), HttpStatus.OK);
 	}
 
 	@ApiOperation(value="Faz uma operacao no banco, aceitando operacoes do tipo CREDITO, e DEBITO.")
@@ -88,7 +97,7 @@ public class ContaController {
 		contaService.operacao(numero, valor, tipo);
 		String op = String.format("Tipo de operacao:%s\nValor da operacao:R$%.2f\n%s", tipo.toUpperCase(), valor,
 				contaService.exibirPorNumero(numero).toString());
-		return new ResponseEntity<String>(op, contaService.Header(), HttpStatus.OK);
+		return new ResponseEntity<String>(op, Header(), HttpStatus.OK);
 	}
 
 	@ApiOperation(value="Deleta uma conta utilizando o identificador 'numero'")
@@ -98,7 +107,7 @@ public class ContaController {
 		Conta ctDeletada = contaService.exibirPorNumero(numero);
 		String cd = "Conta excluida com sucesso!\n" + ctDeletada.toString();
 		contaService.deletarConta(numero);
-		return new ResponseEntity<String>(cd, contaService.Header(), HttpStatus.OK);
+		return new ResponseEntity<String>(cd, Header(), HttpStatus.OK);
 	}
 
 	@ApiOperation(value="Limpa a lista de contas") 
@@ -106,7 +115,7 @@ public class ContaController {
 	public ResponseEntity<String> limparLista() {
 		contaService.limparLista();
 		String msg = "Contas excuidas com sucesso";
-		return new ResponseEntity<String>(msg, contaService.Header(), HttpStatus.OK);
+		return new ResponseEntity<String>(msg, Header(), HttpStatus.OK);
 	}
 
 }

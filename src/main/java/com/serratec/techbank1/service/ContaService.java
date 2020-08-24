@@ -36,13 +36,6 @@ public class ContaService {
 		
 	}
 
-	public HttpHeaders Header() {
-		HttpHeaders header = new HttpHeaders();
-		header.add("TECHBANK", "REST_API");
-		header.add("SERRATEC", "SOFTWARE_IMMERSION");
-		return header;
-	}
-
 	public List<Conta> listarContas() {
 		return listaContas;
 	}
