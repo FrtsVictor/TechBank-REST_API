@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.serratec</groupId>
-	<artifactId>TechBank-1</artifactId>
+	<artifactId>TechBank</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>TechBank-1</name>
-	<description>Banco para gerenciamento de contas</description>
+	<name>TechBank</name>
+	<description>API REST para gerenciamento de contas</description>
 
 	<properties>
 		<java.version>14</java.version>
@@ -34,6 +34,11 @@
 					<artifactId>junit-vintage-engine</artifactId>
 				</exclusion>
 			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<optional>true</optional>
 		</dependency>
 	</dependencies>
 
