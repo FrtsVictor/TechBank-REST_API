@@ -79,8 +79,8 @@ public class ContaController {
 		return new ResponseEntity<Conta>(conta, contaService.Header(), HttpStatus.OK);
 	}
 
-	@ApiOperation(value="Faz uma transacao no banco, aceitando transacoes do tipo Credido, e debito use a rota")
-	@PutMapping("/{numero}/{tipo}={valor}")
+	@ApiOperation(value="Faz uma operacao no banco, aceitando operacoes do tipo CREDITO, e DEBITO.")
+	@PostMapping("/{numero}/{tipo}={valor}")
 	public ResponseEntity<String> operacao(@PathVariable Integer numero, @PathVariable Double valor,
 			@PathVariable String tipo) throws NumeroInvalidoException, NumeroNaoEncontradoException,
 			SaldoInvalidoException, ValorInvalidoException, ValorOperacaoException {
@@ -101,7 +101,7 @@ public class ContaController {
 		return new ResponseEntity<String>(cd, contaService.Header(), HttpStatus.OK);
 	}
 
-	@ApiOperation(value="Limpa a lista de  contas") 
+	@ApiOperation(value="Limpa a lista de contas") 
 	@DeleteMapping("/clear")
 	public ResponseEntity<String> limparLista() {
 		contaService.limparLista();

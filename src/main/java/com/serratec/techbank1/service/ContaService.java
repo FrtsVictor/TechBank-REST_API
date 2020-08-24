@@ -33,6 +33,7 @@ public class ContaService {
 		listaContas.add(new Conta(3, "Priscila", 5000.00));
 		listaContas.add(new Conta(4, "Evodio", 7000.00));
 		listaContas.add(new Conta(5, "Carlos", 5000.00));
+		
 	}
 
 	public HttpHeaders Header() {
@@ -95,7 +96,7 @@ public class ContaService {
 		if (ct.getTitular() == null || ct.getTitular().isBlank()) {
 			ct.setTitular(conta.getTitular());
 		}
-		if (ct.getSaldo() == null) {
+		if (ct.getSaldo() == null| ct.getSaldo().isNaN()) {
 			ct.setSaldo(this.conta.getSaldo());
 		}
 		listaContas.set(listaContas.indexOf(conta), ct);

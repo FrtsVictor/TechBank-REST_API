@@ -18,6 +18,12 @@ public class AboutUsConfig {
 	private String howToUse;
 	private Conta conta;
 	
+	public void bemVindoAoSistema() {
+		 System.out.println("\n---------------------------------------");
+		 System.out.println("-> BEM VINDO AO TECH BANK v1.0");
+		 System.out.println("-> API REST PARA GERENCIAMENTO DE CONTAS");
+		 System.out.println("-----------------------------------------");
+	}
 	
 	
 	public String getHowToUse() {
