@@ -1,21 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<<<<<<< HEAD
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-=======
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
->>>>>>> 94d8d9bb5bceb0e36b88211e482bbf05c66f5e18
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>2.3.3.RELEASE</version>
-<<<<<<< HEAD
 		<relativePath /> <!-- lookup parent from repository -->
-=======
-		<relativePath/> <!-- lookup parent from repository -->
->>>>>>> 94d8d9bb5bceb0e36b88211e482bbf05c66f5e18
 	</parent>
 	<groupId>com.serratec</groupId>
 	<artifactId>TechBank</artifactId>
@@ -34,7 +26,6 @@
 		</dependency>
 
 		<dependency>
-<<<<<<< HEAD
 		    <groupId>io.springfox</groupId>
 		    <artifactId>springfox-swagger2</artifactId>
 		    <version>2.7.0</version>
@@ -46,8 +37,6 @@
 		</dependency>
 
 		<dependency>
-=======
->>>>>>> 94d8d9bb5bceb0e36b88211e482bbf05c66f5e18
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>

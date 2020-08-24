@@ -5,10 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-<<<<<<< HEAD
 import org.springframework.web.bind.annotation.CrossOrigin;
-=======
->>>>>>> 94d8d9bb5bceb0e36b88211e482bbf05c66f5e18
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,7 +23,6 @@ import com.serratec.techbank1.exception.ValorOperacaoException;
 import com.serratec.techbank1.model.Conta;
 import com.serratec.techbank1.service.ContaService;
 
-<<<<<<< HEAD
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -34,10 +30,6 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @RequestMapping(value="/conta")
 @Api(value="REST API TechBank")
-=======
-@RestController
-@RequestMapping("/conta")
->>>>>>> 94d8d9bb5bceb0e36b88211e482bbf05c66f5e18
 public class ContaController {
 
 	@Autowired
@@ -45,37 +37,26 @@ public class ContaController {
 
 	@Autowired
 	AboutUsConfig aboutUsConfig;
-<<<<<<< HEAD
 	
 	@ApiOperation(value="Retorna AboutUs, lista de informações sobre o sistema")
-=======
-
->>>>>>> 94d8d9bb5bceb0e36b88211e482bbf05c66f5e18
 	@GetMapping("/about-us")
 	public ResponseEntity<AboutUsConfig> aboutUs() {
 		return new ResponseEntity<AboutUsConfig>(aboutUsConfig, contaService.Header(), HttpStatus.ACCEPTED);
 	}
 
-<<<<<<< HEAD
 	@ApiOperation(value="Retorna lista com todas as contas no sistema")
-=======
->>>>>>> 94d8d9bb5bceb0e36b88211e482bbf05c66f5e18
 	@GetMapping
 	public ResponseEntity<List<Conta>> listarContas() {
 		return new ResponseEntity<List<Conta>>(contaService.listarContas(), contaService.Header(), HttpStatus.OK);
 	}
 
-<<<<<<< HEAD
 	@ApiOperation(value="Retorna quantidade total de contas na lista")
-=======
->>>>>>> 94d8d9bb5bceb0e36b88211e482bbf05c66f5e18
 	@GetMapping("/size")
 	public ResponseEntity<String> contarLista() {
 		String tamanhoLista = "Contas no sistema: " + contaService.contarLista().toString();
 		return new ResponseEntity<String>(tamanhoLista, contaService.Header(), HttpStatus.OK);
 	}
 
-<<<<<<< HEAD
 	@ApiOperation(value="Retorna conta pelo identificador 'numero' ,nao aceita numeros negativos ou 0")
 	@GetMapping("/{numero}")
 	public ResponseEntity<Conta> exibePorNumero(@PathVariable Integer numero)
@@ -84,25 +65,13 @@ public class ContaController {
 	}
 
 	@ApiOperation(value="Adiciona uma conta no sistema, nao aceita valores nulos, negativos ou numeros de conta ja existentes")
-=======
-	@GetMapping("/{numero}")
-	public ResponseEntity<Conta> exibePorNumero(@PathVariable Integer numero)
-			throws NumeroInvalidoException, NumeroNaoEncontradoException {
-		// contaService.exibirPorNumero(numero);
-		return new ResponseEntity<Conta>(contaService.exibirPorNumero(numero), contaService.Header(), HttpStatus.OK);
-	}
-
->>>>>>> 94d8d9bb5bceb0e36b88211e482bbf05c66f5e18
 	@PostMapping
 	public ResponseEntity<Conta> adicionarConta(Conta conta)
 			throws ContaRepetidaException, ContaNullException, NumeroInvalidoException, SaldoInvalidoException {
 		return new ResponseEntity<Conta>(contaService.adicionarConta(conta), contaService.Header(), HttpStatus.CREATED);
 	}
 
-<<<<<<< HEAD
 	@ApiOperation(value="Atualiza uma conta utilizando o identificador 'numero', caso todos os dados nao sejam inseridos, manten-se os valores anteriores")
-=======
->>>>>>> 94d8d9bb5bceb0e36b88211e482bbf05c66f5e18
 	@PutMapping
 	public ResponseEntity<Conta> atualizarConta(Conta conta)
 			throws NumeroInvalidoException, NumeroNaoEncontradoException, SaldoInvalidoException {
@@ -110,10 +79,7 @@ public class ContaController {
 		return new ResponseEntity<Conta>(conta, contaService.Header(), HttpStatus.OK);
 	}
 
-<<<<<<< HEAD
 	@ApiOperation(value="Faz uma transacao no banco, aceitando transacoes do tipo Credido, e debito use a rota")
-=======
->>>>>>> 94d8d9bb5bceb0e36b88211e482bbf05c66f5e18
 	@PutMapping("/{numero}/{tipo}={valor}")
 	public ResponseEntity<String> operacao(@PathVariable Integer numero, @PathVariable Double valor,
 			@PathVariable String tipo) throws NumeroInvalidoException, NumeroNaoEncontradoException,
@@ -125,10 +91,7 @@ public class ContaController {
 		return new ResponseEntity<String>(op, contaService.Header(), HttpStatus.OK);
 	}
 
-<<<<<<< HEAD
 	@ApiOperation(value="Deleta uma conta utilizando o identificador 'numero'")
-=======
->>>>>>> 94d8d9bb5bceb0e36b88211e482bbf05c66f5e18
 	@DeleteMapping("/{numero}")
 	public ResponseEntity<?> deletarConta(@PathVariable Integer numero)
 			throws NumeroInvalidoException, NumeroNaoEncontradoException {
@@ -138,10 +101,7 @@ public class ContaController {
 		return new ResponseEntity<String>(cd, contaService.Header(), HttpStatus.OK);
 	}
 
-<<<<<<< HEAD
 	@ApiOperation(value="Limpa a lista de  contas") 
-=======
->>>>>>> 94d8d9bb5bceb0e36b88211e482bbf05c66f5e18
 	@DeleteMapping("/clear")
 	public ResponseEntity<String> limparLista() {
 		contaService.limparLista();
