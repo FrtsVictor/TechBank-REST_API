@@ -13,6 +13,7 @@ import com.serratec.techbank1.exception.ContaRepetidaException;
 import com.serratec.techbank1.exception.NumeroInvalidoException;
 import com.serratec.techbank1.exception.SaldoInvalidoException;
 import com.serratec.techbank1.exception.ValorInvalidoException;
+import com.serratec.techbank1.exception.ValorOperacaoException;
 import com.serratec.techbank1.model.Conta;
 import com.serratec.techbank1.model.Operacao;
 import com.serratec.techbank1.model.Tipo;
@@ -140,7 +141,7 @@ public class ContaService {
 	Operacao operacao;
 
 	public Conta operacao(Integer numero, Double valor, String tipo) throws NumeroInvalidoException,
-			NumeroNaoEncontradoException, SaldoInvalidoException, ValorInvalidoException {
+			NumeroNaoEncontradoException, SaldoInvalidoException, ValorInvalidoException, ValorOperacaoException {
 		operacao.setTipo(Tipo.valueOf(tipo.toUpperCase()));
 		if (valor <= 0) {
 			throw new ValorInvalidoException(valor);
@@ -148,6 +149,7 @@ public class ContaService {
 		Conta ct = exibirPorNumero(numero);
 
 		if (operacao.getTipo() == Tipo.CREDITO) {
+			if(valor<50) {throw new ValorOperacaoException(valor);}
 			operacao.creditar(ct, valor);
 			return ct;
 		}

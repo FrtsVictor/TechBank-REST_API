@@ -12,6 +12,7 @@ import com.serratec.techbank1.exception.ContaRepetidaException;
 import com.serratec.techbank1.exception.NumeroInvalidoException;
 import com.serratec.techbank1.exception.SaldoInvalidoException;
 import com.serratec.techbank1.exception.ValorInvalidoException;
+import com.serratec.techbank1.exception.ValorOperacaoException;
 
 @RestControllerAdvice
 public class ContaExceptionController {
@@ -57,6 +58,13 @@ public class ContaExceptionController {
 	@ExceptionHandler(ValorInvalidoException.class)
 	public ResponseEntity<?> valorInvalido(ValorInvalidoException exception) {
 		String msg = String.format("R$%.2f = Invalido.Valor minimo para operacao R$1.00", exception.getValor());
+		return ResponseEntity.badRequest().header("Error-msg", msg).header("Error-code", "INVALID_VALUE").build();
+	}
+	
+	
+	@ExceptionHandler(ValorOperacaoException.class)
+	public ResponseEntity<?> valorInvalido(ValorOperacaoException exception) {
+		String msg = String.format("R$%.2f = Valor invalido.Valor minimo para operacao de credito: R$50.00", exception.getValor());
 		return ResponseEntity.badRequest().header("Error-msg", msg).header("Error-code", "INVALID_VALUE").build();
 	}
 

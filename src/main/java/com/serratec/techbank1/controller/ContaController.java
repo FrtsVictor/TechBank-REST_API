@@ -18,6 +18,7 @@ import com.serratec.techbank1.exception.ContaRepetidaException;
 import com.serratec.techbank1.exception.NumeroInvalidoException;
 import com.serratec.techbank1.exception.SaldoInvalidoException;
 import com.serratec.techbank1.exception.ValorInvalidoException;
+import com.serratec.techbank1.exception.ValorOperacaoException;
 import com.serratec.techbank1.model.Conta;
 import com.serratec.techbank1.service.ContaService;
 
@@ -70,7 +71,7 @@ public class ContaController {
 	@PutMapping("/{numero}/{tipo}={valor}")
 	public ResponseEntity<String> operacao(@PathVariable Integer numero, @PathVariable Double valor,
 			@PathVariable String tipo) throws NumeroInvalidoException, NumeroNaoEncontradoException,
-			SaldoInvalidoException, ValorInvalidoException {
+			SaldoInvalidoException, ValorInvalidoException, ValorOperacaoException {
 
 		contaService.operacao(numero, valor, tipo);
 		String op = String.format("Tipo de operacao:%s\nValor da operacao:R$%.2f\n%s", tipo.toUpperCase(), valor,
