@@ -1,7 +1,6 @@
 package com.serratec.techbank1.exception;
 
-public class ContaRepetidaException extends Exception{
-
+public class ContaRepetidaException extends Exception {
 
 	private static final long serialVersionUID = 597168399982939419L;
 
@@ -16,7 +15,4 @@ public class ContaRepetidaException extends Exception{
 		return numero;
 	}
 
-
-	
-	
 }
