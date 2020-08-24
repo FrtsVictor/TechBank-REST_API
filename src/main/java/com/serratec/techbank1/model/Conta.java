@@ -1,12 +1,13 @@
 package com.serratec.techbank1.model;
 
-public class Conta  {
+import org.springframework.stereotype.Component;
 
+@Component
+public class Conta {
 
 	private Integer numero;
 	private String titular;
 	private Double saldo;
-		
 
 	public Conta(Integer numero, String titular, Double saldo) {
 		super();
@@ -15,36 +16,36 @@ public class Conta  {
 		this.saldo = saldo;
 	}
 
-	public Conta() {}
-	
-	
+	public Conta() {
+	}
 
 	public Integer getNumero() {
 		return numero;
 	}
-	
 
 	public void setNumero(Integer numero) {
 		this.numero = numero;
 	}
+
 	public String getTitular() {
 		return titular;
 	}
+
 	public void setTitular(String titular) {
 		this.titular = titular;
 	}
+
 	public Double getSaldo() {
 		return saldo;
 	}
+
 	public void setSaldo(Double saldo) {
 		this.saldo = saldo;
 	}
 
 	@Override
 	public String toString() {
-		return "Conta [numero=" + numero + ", titular=" + titular + ", saldo=" + saldo + "]";
+		return "Numero conta:  " + numero + "\n" + "Titular: " + titular + "\n" + "Saldo:R$" + saldo;
 	}
-	
-	
-	
+
 }
