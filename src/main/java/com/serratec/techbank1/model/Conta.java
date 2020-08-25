@@ -8,13 +8,32 @@ public class Conta {
 	private Integer numero;
 	private String titular;
 	private Double saldo;
+	private boolean ativa;
 
-	public Conta(Integer numero, String titular, Double saldo) {
+	public Conta(Integer numero, String titular, Double saldo, boolean ativa) {
 		super();
 		this.numero = numero;
 		this.titular = titular;
 		this.saldo = saldo;
+		this.ativa = ativa;
 	}
+	
+	
+	
+
+	public boolean isAtiva() {
+		return ativa;
+	}
+
+
+
+
+	public void setAtiva(boolean ativa) {
+		this.ativa = ativa;
+	}
+
+
+
 
 	public Conta() {
 	}

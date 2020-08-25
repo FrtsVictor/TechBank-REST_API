@@ -19,7 +19,7 @@ public class ContaExceptionController {
 
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<String> erroGenerico(Exception exception) {
-		String msg = ("Nos Desculpe! Ocorreu interno no servidor :(");
+		String msg = ("Nos Desculpe! Ocorreu um erro interno no servidor :(");
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).header("X-Erro-msg", msg)
 				.header("X-Erro-msg", "GENERIC SERVER ERROR").header("X-Erroo-code", "INTERNAL SERVER ERROR").build();
 	}

@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 
-import com.serratec.techbank1.controller.AboutUsConfig;
+import com.serratec.techbank1.config.AboutUsConfig;
 
 @SpringBootApplication
 public class TechBank1Application {

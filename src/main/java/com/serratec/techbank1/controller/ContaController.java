@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.serratec.techbank1.exception.NumeroNaoEncontradoException;
+import com.serratec.techbank1.config.AboutUsConfig;
 import com.serratec.techbank1.exception.ContaNullException;
 import com.serratec.techbank1.exception.ContaRepetidaException;
 import com.serratec.techbank1.exception.NumeroInvalidoException;
@@ -23,6 +24,7 @@ import com.serratec.techbank1.exception.ValorInvalidoException;
 import com.serratec.techbank1.exception.ValorOperacaoException;
 import com.serratec.techbank1.model.Conta;
 import com.serratec.techbank1.service.ContaService;
+
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -53,6 +55,13 @@ public class ContaController {
 		return new ResponseEntity<AboutUsConfig>(aboutUsConfig, Header(), HttpStatus.ACCEPTED);
 	}
 
+	@ApiOperation(value="Retorna lista de contas ativas/inativas no sistema. Use true/false")
+	@GetMapping("/active={active}")
+	public ResponseEntity<List<Conta>> listaContaAtiva(@PathVariable boolean active) {
+		return new ResponseEntity<List<Conta>>(contaService.exibirContaAtiva(active), Header(), HttpStatus.OK);
+	}
+	
+	
 	@ApiOperation(value="Retorna lista com todas as contas no sistema")
 	@GetMapping
 	public ResponseEntity<List<Conta>> listarContas() {
@@ -117,5 +126,6 @@ public class ContaController {
 		String msg = "Contas excuidas com sucesso";
 		return new ResponseEntity<String>(msg, Header(), HttpStatus.OK);
 	}
+	
 
 }

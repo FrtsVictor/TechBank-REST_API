@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
 import com.serratec.techbank1.exception.NumeroNaoEncontradoException;
@@ -28,11 +27,11 @@ public class ContaService {
 
 	public ContaService() {
 		listaContas = new ArrayList<Conta>();
-		listaContas.add(new Conta(1, "Victor", 5000.00));
-		listaContas.add(new Conta(2, "Lais", 4000.00));
-		listaContas.add(new Conta(3, "Priscila", 5000.00));
-		listaContas.add(new Conta(4, "Evodio", 7000.00));
-		listaContas.add(new Conta(5, "Carlos", 5000.00));
+		listaContas.add(new Conta(1, "Victor", 5000.00, false));
+		listaContas.add(new Conta(2, "Lais", 4000.00, true));
+		listaContas.add(new Conta(3, "Priscila", 5000.00, true));
+		listaContas.add(new Conta(4, "Evodio", 7000.00, false));
+		listaContas.add(new Conta(5, "Carlos", 5000.00, true));
 		
 	}
 
@@ -47,6 +46,13 @@ public class ContaService {
 	public Integer contarLista() {
 		return listaContas.size();
 	}
+	
+	public List<Conta> exibirContaAtiva(boolean active) {
+		List<Conta>listaCt=new ArrayList<Conta>();
+		listaContas.forEach(ct -> {if(ct.isAtiva()==active) {listaCt.add(ct);}});
+		return listaCt;
+	}
+	
 
 	public Conta exibirPorNumero(Integer numero) throws NumeroInvalidoException, NumeroNaoEncontradoException {
 		verificarNumeroValido(numero);
@@ -56,26 +62,21 @@ public class ContaService {
 				return conta;
 			}
 		}
-		if (!listaContas.contains(this.conta.getNumero())) {
+	
+	if (!listaContas.contains(this.conta.getNumero())) {
 			return numeroNaoEncontrado(true);
 		}
 		;
-		return null;
+		return this.conta;
 	}
 
 	public Conta adicionarConta(Conta conta)
 			throws ContaRepetidaException, ContaNullException, NumeroInvalidoException, SaldoInvalidoException {
-		if (conta.getSaldo() == null) {
-			conta.setSaldo(0.0);
-		}
-		if (conta.getNumero() == null || conta.getTitular() == null) {
-			throw new ContaNullException(conta);
-		}
+		if (conta.getNumero() == null || conta.getTitular() == null) {throw new ContaNullException(conta);}		
 		verificarNumeroValido(conta.getNumero());
-		validarNumero(conta.getNumero());
-		if (conta.getSaldo() < 0) {
-			throw new SaldoInvalidoException(conta.getSaldo());
-		}
+		verificarNumeroRepetido(conta.getNumero());
+		if (conta.getSaldo() < 0) {throw new SaldoInvalidoException(conta.getSaldo());}
+		if (conta.getSaldo() == null) {conta.setSaldo(0.0);}
 		listaContas.add(conta);
 		return conta;
 	}
@@ -83,15 +84,9 @@ public class ContaService {
 	public Conta atualizarConta(Conta ct)
 			throws NumeroInvalidoException, NumeroNaoEncontradoException, SaldoInvalidoException {
 		conta = exibirPorNumero(ct.getNumero());
-		if (ct.getSaldo() < 0) {
-			throw new SaldoInvalidoException(ct.getSaldo());
-		}
-		if (ct.getTitular() == null || ct.getTitular().isBlank()) {
-			ct.setTitular(conta.getTitular());
-		}
-		if (ct.getSaldo() == null| ct.getSaldo().isNaN()) {
-			ct.setSaldo(this.conta.getSaldo());
-		}
+		if (ct.getSaldo() < 0) {throw new SaldoInvalidoException(ct.getSaldo());}
+		if (ct.getTitular() == null || ct.getTitular().isBlank()) {ct.setTitular(conta.getTitular());}
+		if (ct.getSaldo() == null| ct.getSaldo().isNaN()) {ct.setSaldo(this.conta.getSaldo());}
 		listaContas.set(listaContas.indexOf(conta), ct);
 		return this.conta;
 	}
@@ -119,7 +114,7 @@ public class ContaService {
 		}
 	}
 
-	public void validarNumero(Integer numero) throws ContaRepetidaException {
+	public void verificarNumeroRepetido(Integer numero) throws ContaRepetidaException {
 		for (Conta conta : listaContas) {
 			Boolean numeroInvalido = conta.getNumero().equals(numero);
 			if (numeroInvalido) {
