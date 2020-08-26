@@ -6,9 +6,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.serratec.techbank1.exception.NumeroNaoEncontradoException;
+import com.serratec.techbank1.exception.OperacaoInvalidaException;
 import com.serratec.techbank1.model.Conta;
 import com.serratec.techbank1.exception.ContaNullException;
 import com.serratec.techbank1.exception.ContaRepetidaException;
+import com.serratec.techbank1.exception.NomeInvalidoException;
 import com.serratec.techbank1.exception.NumeroInvalidoException;
 import com.serratec.techbank1.exception.SaldoInvalidoException;
 import com.serratec.techbank1.exception.ValorInvalidoException;
@@ -25,19 +27,19 @@ public class ContaExceptionController {
 	}
 
 	@ExceptionHandler(NumeroInvalidoException.class)
-	public ResponseEntity<?> numeroInvalido(NumeroInvalidoException exception) {
+	public ResponseEntity<String> numeroInvalido(NumeroInvalidoException exception) {
 		String msg = String.format("%d = Invalido.Digite um valor maior que 0", exception.getNumero());
 		return ResponseEntity.badRequest().header("Error-msg", msg).header("Error-code", "INVALID_NUMBER").build();
 	}
 
 	@ExceptionHandler(SaldoInvalidoException.class)
-	public ResponseEntity<?> saldoInvalido(SaldoInvalidoException exception) {
+	public ResponseEntity<String> saldoInvalido(SaldoInvalidoException exception) {
 		String msg = String.format("R$%.2f saldo insuficiente.", exception.getSaldo());
 		return ResponseEntity.badRequest().header("X-Erro-msg", msg).header("X-Erro-code", "IVALID_BALANCE").build();
 	}
 
 	@ExceptionHandler(NumeroNaoEncontradoException.class)
-	public ResponseEntity<?> numeroNaoEncontrado(NumeroNaoEncontradoException exception) {
+	public ResponseEntity<String> numeroNaoEncontrado(NumeroNaoEncontradoException exception) {
 		String msg = "Numero inserido não encontrado";
 		return ResponseEntity.notFound().header("X-Erro-msg", msg).header("X-Erro-code", "NOT_FOUND").build();
 	}
@@ -52,20 +54,35 @@ public class ContaExceptionController {
 	@ExceptionHandler(ContaNullException.class)
 	public ResponseEntity<Conta> contaInvalida(ContaNullException exception) {
 		String msg = String.format("Voce nao inseriu todos os atributos requeridos para a criacao da nova conta");
-		return ResponseEntity.badRequest().header("X-Erro-msg", msg).header("X-Erro-code", "NULL_VALUES").build();
+		return ResponseEntity.badRequest().header("X-Erro-msg", msg).header("X-Erro-code", "CONTAINS_NULL_VALUES").build();
 	}
 
 	@ExceptionHandler(ValorInvalidoException.class)
-	public ResponseEntity<?> valorInvalido(ValorInvalidoException exception) {
-		String msg = String.format("R$%.2f = Invalido.Valor minimo para operacao R$1.00", exception.getValor());
+	public ResponseEntity<String> valorInvalido(ValorInvalidoException exception) {
+		String msg = String.format("R$%.2f = Invalido.Valor minimo para operacao R$3,00", exception.getValor());
 		return ResponseEntity.badRequest().header("Error-msg", msg).header("Error-code", "INVALID_VALUE").build();
 	}
 	
 	
 	@ExceptionHandler(ValorOperacaoException.class)
-	public ResponseEntity<?> valorInvalido(ValorOperacaoException exception) {
-		String msg = String.format("R$%.2f = Valor invalido.Valor minimo para operacao de credito: R$50.00", exception.getValor());
+	public ResponseEntity<String> valorInvalido(ValorOperacaoException exception) {
+		String msg = "Valor minimo para operacao de credito: R$50.00";
 		return ResponseEntity.badRequest().header("Error-msg", msg).header("Error-code", "INVALID_VALUE").build();
 	}
 
+	
+	@ExceptionHandler(OperacaoInvalidaException.class)
+	public ResponseEntity<String> operacaoInvalida(OperacaoInvalidaException exception) {
+		String msg = String.format("Operacao invalida! Operacoes validas:'credito' 'debito'");
+		return ResponseEntity.badRequest().header("Error-msg", msg).header("Error-code", "INVALID_OPERATION").build();
+	}
+	
+	
+	@ExceptionHandler(NomeInvalidoException.class)
+	public ResponseEntity<String> nomeInvalido(NomeInvalidoException exception) {
+		String msg = "Nome nao inserido.";
+		return ResponseEntity.badRequest().header("Error-msg", msg).header("Error-code", "INVALID_NAME").build();
+	}
+	
+	
 }
