@@ -12,12 +12,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.serratec.techbank1.exception.NumeroNaoEncontradoException;
+import com.serratec.techbank1.exception.OperacaoInvalidaException;
 import com.serratec.techbank1.config.AboutUsConfig;
 import com.serratec.techbank1.exception.ContaNullException;
 import com.serratec.techbank1.exception.ContaRepetidaException;
+import com.serratec.techbank1.exception.NomeInvalidoException;
 import com.serratec.techbank1.exception.NumeroInvalidoException;
 import com.serratec.techbank1.exception.SaldoInvalidoException;
 import com.serratec.techbank1.exception.ValorInvalidoException;
@@ -84,14 +88,14 @@ public class ContaController {
 
 	@ApiOperation(value="Adiciona uma conta no sistema, nao aceita valores nulos, negativos ou numeros de conta ja existentes")
 	@PostMapping
-	public ResponseEntity<Conta> adicionarConta(Conta conta)
-			throws ContaRepetidaException, ContaNullException, NumeroInvalidoException, SaldoInvalidoException {
+	public ResponseEntity<Conta> adicionarConta(@RequestBody Conta conta)
+			throws ContaRepetidaException, ContaNullException, NumeroInvalidoException, SaldoInvalidoException, NomeInvalidoException {
 		return new ResponseEntity<Conta>(contaService.adicionarConta(conta), Header(), HttpStatus.CREATED);
 	}
 
 	@ApiOperation(value="Atualiza uma conta utilizando o identificador 'numero', caso todos os dados nao sejam inseridos, manten-se os valores anteriores")
 	@PutMapping
-	public ResponseEntity<Conta> atualizarConta(Conta conta)
+	public ResponseEntity<Conta> atualizarConta(@RequestBody Conta conta)
 			throws NumeroInvalidoException, NumeroNaoEncontradoException, SaldoInvalidoException {
 		contaService.atualizarConta(conta);
 		return new ResponseEntity<Conta>(conta, Header(), HttpStatus.OK);
@@ -101,12 +105,12 @@ public class ContaController {
 	@PostMapping("/{numero}/{tipo}={valor}")
 	public ResponseEntity<String> operacao(@PathVariable Integer numero, @PathVariable Double valor,
 			@PathVariable String tipo) throws NumeroInvalidoException, NumeroNaoEncontradoException,
-			SaldoInvalidoException, ValorInvalidoException, ValorOperacaoException {
+			SaldoInvalidoException, ValorInvalidoException, ValorOperacaoException, OperacaoInvalidaException {
 
 		contaService.operacao(numero, valor, tipo);
 		String op = String.format("Tipo de operacao:%s\nValor da operacao:R$%.2f\n%s", tipo.toUpperCase(), valor,
 				contaService.exibirPorNumero(numero).toString());
-		return new ResponseEntity<String>(op, Header(), HttpStatus.OK);
+		return new ResponseEntity<String>(op, Header(), HttpStatus.ACCEPTED);
 	}
 
 	@ApiOperation(value="Deleta uma conta utilizando o identificador 'numero'")
@@ -127,5 +131,7 @@ public class ContaController {
 		return new ResponseEntity<String>(msg, Header(), HttpStatus.OK);
 	}
 	
-
+	
+	
+	
 }
