@@ -19,6 +19,7 @@ public class NumeroInvalidoException extends Exception{
 		this.numero = numero;
 	}
 	
+	NumeroInvalidoException(){}
 	
 	
 	

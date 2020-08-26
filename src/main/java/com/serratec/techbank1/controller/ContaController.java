@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.serratec.techbank1.exception.NumeroNaoEncontradoException;
 import com.serratec.techbank1.exception.OperacaoInvalidaException;
@@ -59,7 +58,7 @@ public class ContaController {
 		return new ResponseEntity<AboutUsConfig>(aboutUsConfig, Header(), HttpStatus.ACCEPTED);
 	}
 
-	@ApiOperation(value="Retorna lista de contas ativas/inativas no sistema. Use true/false")
+	@ApiOperation(value="Retorna lista de contas ativas/inativas no sistema. Use active/'true'/'false'")
 	@GetMapping("/active={active}")
 	public ResponseEntity<List<Conta>> listaContaAtiva(@PathVariable boolean active) {
 		return new ResponseEntity<List<Conta>>(contaService.exibirContaAtiva(active), Header(), HttpStatus.OK);
@@ -75,7 +74,7 @@ public class ContaController {
 	@ApiOperation(value="Retorna quantidade total de contas na lista")
 	@GetMapping("/size")
 	public ResponseEntity<String> contarLista() {
-		String tamanhoLista = "Contas no sistema: " + contaService.contarLista().toString();
+		String tamanhoLista = "Total de contas no sistema: " + contaService.contarLista().toString();
 		return new ResponseEntity<String>(tamanhoLista, Header(), HttpStatus.OK);
 	}
 
@@ -130,8 +129,5 @@ public class ContaController {
 		String msg = "Contas excuidas com sucesso";
 		return new ResponseEntity<String>(msg, Header(), HttpStatus.OK);
 	}
-	
-	
-	
-	
+
 }

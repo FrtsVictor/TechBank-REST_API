@@ -67,12 +67,9 @@ public class ContaService {
 				return conta;
 			}
 		}
-
-		if (!listaContas.contains(this.conta.getNumero())) {
-			return numeroNaoEncontrado(true);
-		}
-		;
-		return this.conta;
+		boolean validador = !listaContas.contains(this.conta.getNumero());
+		numeroNaoEncontrado(validador);
+		return null;
 	}
 
 	public Conta adicionarConta(Conta conta) throws ContaRepetidaException, ContaNullException, NumeroInvalidoException,
@@ -83,10 +80,8 @@ public class ContaService {
 		validarNome(conta.getTitular());
 		verificarNumeroValido(conta.getNumero());
 		verificarNumeroRepetido(conta.getNumero());
+		validarSaldo(conta);
 
-		if (conta.getSaldo() < 0) {
-			throw new SaldoInvalidoException(conta.getSaldo());
-		}
 		if (conta.getSaldo() == null) {
 			conta.setSaldo(0.0);
 		}
@@ -97,15 +92,8 @@ public class ContaService {
 	public Conta atualizarConta(Conta ct)
 			throws NumeroInvalidoException, NumeroNaoEncontradoException, SaldoInvalidoException {
 		conta = exibirPorNumero(ct.getNumero());
-		if (ct.getSaldo() < 0) {
-			throw new SaldoInvalidoException(ct.getSaldo());
-		}
-		if (ct.getTitular() == null || ct.getTitular().isBlank()) {
-			ct.setTitular(conta.getTitular());
-		}
-		if (ct.getSaldo() == null | ct.getSaldo().isNaN()) {
-			ct.setSaldo(this.conta.getSaldo());
-		}
+		validarSaldo(ct);
+		valoresAnteriores(ct);
 		listaContas.set(listaContas.indexOf(conta), ct);
 		return this.conta;
 	}
@@ -116,7 +104,6 @@ public class ContaService {
 		return ct;
 	}
 
-
 //___________________________OPERACOES________________________________________________________________
 
 	@Autowired
@@ -126,16 +113,12 @@ public class ContaService {
 			throws NumeroInvalidoException, NumeroNaoEncontradoException, SaldoInvalidoException,
 			ValorInvalidoException, ValorOperacaoException, OperacaoInvalidaException {
 		validarValor(valor);
-		validarOperacao(tipo);
-		
+		validarTipoOperacao(tipo);
 		operacao.setTipo(Tipo.valueOf(tipo.toUpperCase()));
 
 		Conta ct = exibirPorNumero(numero);
-
 		if (operacao.getTipo() == Tipo.CREDITO) {
-			if (valor < 50) {
-				throw new ValorOperacaoException(valor);
-			}
+			validarCredito(valor);
 			operacao.creditar(ct, valor);
 			return ct;
 		}
@@ -149,52 +132,70 @@ public class ContaService {
 
 	}
 
-
-
 //____________________________EXCEPTIONS_______________________________________________________________________	
 
-
-
-private void validarOperacao(String tipo) throws OperacaoInvalidaException {
-	if (!tipo.equalsIgnoreCase("credito") || tipo.equals("debito")) {
-		throw new OperacaoInvalidaException();
+	public void valoresAnteriores(Conta ct) {
+		if (ct.getTitular() == null || ct.getTitular().isBlank()) {
+			ct.setTitular(conta.getTitular());
+		}
+		if (ct.getSaldo() == null | ct.getSaldo().isNaN()) {
+			ct.setSaldo(this.conta.getSaldo());
+		}
+		
 	}
-	;
-}
 
-private void validarValor(Double valor) throws ValorInvalidoException {
-	if (valor == null || valor < 3) {
-		throw new ValorInvalidoException(valor);
-	}
-}
-
-private Conta numeroNaoEncontrado(boolean naoEncontrado)
-		throws NumeroInvalidoException, NumeroNaoEncontradoException {
-	if (naoEncontrado == true) {
-		throw new NumeroNaoEncontradoException();
-	}
-	return null;
 	
-}
-
-private void verificarNumeroValido(Integer numero) throws NumeroInvalidoException {
-	if (numero <= 0 || numero == null) {
-		throw new NumeroInvalidoException(numero);
-	}
-}
-
-private void validarNome(String nome) throws NomeInvalidoException {
-	if (nome.isBlank()) {
-		throw new NomeInvalidoException();
-	}
-}
-
-private void verificarNumeroRepetido(Integer numero) throws ContaRepetidaException {
-	for (Conta conta : listaContas) {
-		Boolean numeroInvalido = conta.getNumero().equals(numero);
-		if (numeroInvalido) {
-			throw new ContaRepetidaException(numero);
-			
+	public void validarSaldo(Conta conta) throws SaldoInvalidoException {
+		if (conta.getSaldo() < 0) {
+			throw new SaldoInvalidoException(conta.getSaldo());
 		}
 	}
-}}
+
+	private void validarCredito(double valor) throws ValorOperacaoException {
+		if (valor < 50) {
+			throw new ValorOperacaoException(valor);
+		}
+	}
+
+	private void validarTipoOperacao(String tipo) throws OperacaoInvalidaException {
+		if (!tipo.equalsIgnoreCase("credito") && !tipo.equals("debito")) {
+			throw new OperacaoInvalidaException();
+		}
+		;
+	}
+
+	private void validarValor(Double valor) throws ValorInvalidoException {
+		if (valor == null || valor < 1) {
+			throw new ValorInvalidoException(valor);
+		}
+	}
+
+	private void numeroNaoEncontrado(boolean naoEncontrado) throws NumeroNaoEncontradoException {
+		if (naoEncontrado == true) {
+			throw new NumeroNaoEncontradoException();
+		}
+
+	}
+
+	private void verificarNumeroValido(Integer numero) throws NumeroInvalidoException {
+		if (numero <= 0 || numero == null) {
+			throw new NumeroInvalidoException(numero);
+		}
+	}
+
+	private void validarNome(String nome) throws NomeInvalidoException {
+		if (nome.isBlank()) {
+			throw new NomeInvalidoException();
+		}
+	}
+
+	private void verificarNumeroRepetido(Integer numero) throws ContaRepetidaException {
+		for (Conta conta : listaContas) {
+			Boolean numeroInvalido = conta.getNumero().equals(numero);
+			if (numeroInvalido) {
+				throw new ContaRepetidaException(numero);
+
+			}
+		}
+	}
+}

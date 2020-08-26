@@ -34,7 +34,7 @@ public class ContaExceptionController {
 
 	@ExceptionHandler(SaldoInvalidoException.class)
 	public ResponseEntity<String> saldoInvalido(SaldoInvalidoException exception) {
-		String msg = String.format("R$%.2f saldo insuficiente.", exception.getSaldo());
+		String msg = String.format("R$-%.2f saldo insuficiente.", exception.getSaldo());
 		return ResponseEntity.badRequest().header("X-Erro-msg", msg).header("X-Erro-code", "IVALID_BALANCE").build();
 	}
 
@@ -59,13 +59,13 @@ public class ContaExceptionController {
 
 	@ExceptionHandler(ValorInvalidoException.class)
 	public ResponseEntity<String> valorInvalido(ValorInvalidoException exception) {
-		String msg = String.format("R$%.2f = Invalido.Valor minimo para operacao R$3,00", exception.getValor());
+		String msg = String.format("R$%.2f = Invalido.Valor minimo para operacao R$1,00", exception.getValor());
 		return ResponseEntity.badRequest().header("Error-msg", msg).header("Error-code", "INVALID_VALUE").build();
 	}
 	
 	
 	@ExceptionHandler(ValorOperacaoException.class)
-	public ResponseEntity<String> valorInvalido(ValorOperacaoException exception) {
+	public ResponseEntity<String> valorOperacaoInvalido(ValorOperacaoException exception) {
 		String msg = "Valor minimo para operacao de credito: R$50.00";
 		return ResponseEntity.badRequest().header("Error-msg", msg).header("Error-code", "INVALID_VALUE").build();
 	}
