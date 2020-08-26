@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # SpringBoot
 =======
 #  :file_folder: Trabalho da disciplina de JAVA 2 :coffee:
@@ -72,4 +71,3 @@ OBS: Os valores acima citados estão sujeitos as alterações das operações.
 
 ## Mentoria
 :key:[Marcelo Assis](https://github.com/massisjr)
->>>>>>> 94d8d9bb5bceb0e36b88211e482bbf05c66f5e18
